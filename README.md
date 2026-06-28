@@ -89,11 +89,11 @@ The **Property Rental Management System** provides the following features:
 
 For testing purposes, you can use the following credentials:
 
-| **Role** | **Email**              | **Password** | **Phone (Pakistan)** |
-|----------|------------------------|--------------|----------------------|
-| Owner    | tylerdurden@gmail.com  | password123  | 03005550002          |
-| Manager  | ednamode@gmail.com     | password123  | 03005550001          |
-| Tenant   | michaelcorleone@gmail.com | password123  | 03005550003       |
+| **Role** | **Email**              | **Password** |
+|----------|------------------------|--------------|
+| Owner    | tylerdurden@gmail.com  | password123  |
+| Manager  | ednamode@gmail.com     | password123  |
+| Tenant   | michaelcorleone@gmail.com | password123  |
 
 ---
 
