@@ -1,0 +1,43 @@
+@model IEnumerable<prjRentalManagement.Models.booking>
+@using prjRentalManagement.Helpers
+@{
+    ViewBag.Title = "My bookings";
+}
+
+<h2>My bookings</h2>
+<p class="text-muted">Track every request for an apartment you have made.</p>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">You have no booking history yet.</div>
+}
+else
+{
+    <div class="table-responsive prm-table-wrap">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Requested</th>
+                    <th>Apartment</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var b in Model)
+                {
+                    var apt = b.apartment;
+                    var bld = apt?.building;
+                    <tr>
+                        <td>@b.requestDate.ToLocalTime().ToString("g")</td>
+                        <td>#@(apt?.apartmentNo) <span class="text-muted small">(ID @b.apartmentId)</span></td>
+                        <td>@(bld != null ? bld.address + ", " + bld.city : "—")</td>
+                        <td><span class="badge @BookingStatusDisplay.BadgeClass(b.status)">@b.status</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<p>@Html.ActionLink("Browse apartments", "Index", "Apartment", null, new { @class = "btn btn-outline-primary" })</p>

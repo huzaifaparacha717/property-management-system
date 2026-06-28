@@ -1,0 +1,80 @@
+@model IEnumerable<prjRentalManagement.Models.apartment>
+@using System.Linq
+@using prjRentalManagement.Helpers
+@{
+    var scrollId = ViewBag.AptScrollId as string ?? "prmAptScroll";
+    var btnId = ViewBag.AptScrollNextId as string ?? "prmAptScrollNext";
+    var list = Model != null ? Model.ToList() : new System.Collections.Generic.List<prjRentalManagement.Models.apartment>();
+}
+@if (!list.Any())
+{
+    <p class="text-muted mb-0">No apartments match your filters.</p>
+}
+else
+{
+    <div class="prm-building-scroll-wrap">
+        <div class="prm-building-scroll" id="@scrollId">
+            @foreach (var item in list)
+            {
+                var b = item.building;
+                var imgSrc = (b != null && !string.IsNullOrEmpty(b.imagePath))
+                    ? Url.Content(b.imagePath)
+                    : Url.Content("~/Images/home.jpg");
+                var featured = b != null && !string.IsNullOrEmpty(b.imagePath);
+                var loc = b != null
+                    ? string.Join(", ", new[] { b.city, b.province }.Where(s => !string.IsNullOrWhiteSpace(s)))
+                    : "";
+                var title = (b != null ? b.address : "Rental listing") + " · Apt " + item.apartmentNo;
+                var meta = item.nbRooms + " rooms · " + RentStatusDisplay.Label(item.status);
+                <div class="prm-bcard-wrap">
+                    <div class="prm-bcard">
+                        <a class="prm-bcard__hit" href="@Url.Action("Details", "Apartment", new { id = item.apartmentId })">
+                            <div class="prm-bcard__media">
+                                <img class="prm-bcard__img" src="@imgSrc" alt="" loading="lazy" />
+                                @if (featured)
+                                {
+                                    <span class="prm-bcard__badge">FEATURED</span>
+                                }
+                            </div>
+                            <div class="prm-bcard__body">
+                                <div class="prm-bcard__price">@PakRsFormat.Rent(item.price)</div>
+                                <div class="prm-bcard__title">@title</div>
+                                <div class="prm-bcard__meta">@meta</div>
+                                <div class="prm-bcard__loc">@loc</div>
+                                <div class="prm-bcard__time">PK · Apartment #@item.apartmentId</div>
+                            </div>
+                        </a>
+                        @{
+                            var canBook = Session["tenant"] != null
+                                && ViewBag.TenantCanBookApartmentIds != null
+                                && ((System.Collections.Generic.HashSet<int>)ViewBag.TenantCanBookApartmentIds).Contains(item.apartmentId);
+                        }
+                        @if (canBook)
+                        {
+                            <div class="prm-bcard__actions">
+                                @Html.ActionLink("Book now", "Book", "Apartment", new { id = item.apartmentId }, new { @class = "btn btn-sm btn-success w-100" })
+                            </div>
+                        }
+                        @if (Session["manager"] != null || Session["owner"] != null)
+                        {
+                            <div class="prm-bcard__actions">
+                                @Html.ActionLink("Edit listing", "Edit", "Apartment", new { id = item.apartmentId }, new { @class = "btn btn-sm btn-outline-primary w-100" })
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+        <button type="button" class="prm-building-scroll-btn" id="@btnId" aria-controls="@scrollId" aria-label="Scroll right" title="Next">›</button>
+    </div>
+    <script>
+        (function () {
+            var el = document.getElementById('@scrollId');
+            var btn = document.getElementById('@btnId');
+            if (!el || !btn) return;
+            btn.addEventListener('click', function () {
+                el.scrollBy({ left: Math.min(280, el.clientWidth * 0.85), behavior: 'smooth' });
+            });
+        })();
+    </script>
+}

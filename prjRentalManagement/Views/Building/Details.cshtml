@@ -1,0 +1,104 @@
+﻿@model prjRentalManagement.Models.building
+@using System.Linq
+@using prjRentalManagement.Helpers
+@{
+    ViewBag.Title = "Building details";
+    var apts = Model.apartments != null ? Model.apartments.OrderBy(a => a.apartmentNo).ToList() : new System.Collections.Generic.List<prjRentalManagement.Models.apartment>();
+}
+<h2>Building details</h2>
+
+<div class="prm-card prm-card--padded mb-4">
+    @if (!string.IsNullOrEmpty(Model.imagePath))
+    {
+        <div class="mb-3">
+            <img src="@Url.Content(Model.imagePath)" alt="Building photo" class="img-fluid rounded" style="max-height: 320px; width: 100%; object-fit: cover;" />
+        </div>
+    }
+    <dl class="row mb-0">
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.address)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.address)</dd>
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.city)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.city)</dd>
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.province)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.province)</dd>
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.postalCode)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.postalCode)</dd>
+        @if (Model.manager != null)
+        {
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.manager.name)</dt>
+            <dd class="col-sm-9">@Model.manager.name</dd>
+        }
+        @if (Model.owner != null)
+        {
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.owner.name)</dt>
+            <dd class="col-sm-9">@Model.owner.name</dd>
+        }
+    </dl>
+</div>
+
+<h3 class="h5 mb-3">Units in this building</h3>
+@if (!apts.Any())
+{
+    <p class="text-muted">No apartments are listed for this building yet.</p>
+}
+else
+{
+    <div class="table-responsive prm-table-wrap mb-3">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Apt #</th>
+                    <th>Rooms</th>
+                    <th>Monthly rent (PKR)</th>
+                    <th>Status</th>
+                    @if (Session["tenant"] != null)
+                    {
+                        <th></th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in apts)
+                {
+                    <tr>
+                        <td>@a.apartmentNo</td>
+                        <td>@a.nbRooms</td>
+                        <td>@Html.DisplayFor(_ => a.price)</td>
+                        <td>
+                            <span class="badge @RentStatusDisplay.BadgeClass(a.status)">@RentStatusDisplay.Label(a.status)</span>
+                        </td>
+                        @if (Session["tenant"] != null)
+                        {
+                            <td>
+                                @Html.ActionLink("Apartment", "Details", "Apartment", new { id = a.apartmentId }, new { @class = "btn btn-sm btn-outline-primary" })
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<p class="d-flex flex-wrap gap-2">
+    @if (Session["manager"] != null || Session["owner"] != null)
+    {
+        @Html.ActionLink("Edit building", "Edit", new { id = Model.buildingId }, new { @class = "btn btn-primary" })
+    }
+    @if (Session["tenant"] != null)
+    {
+        @Html.ActionLink("Back to apartments", "Index", "Apartment", null, new { @class = "btn btn-outline-secondary" })
+    }
+    else if (Session["owner"] != null)
+    {
+        @Html.ActionLink("Back to my buildings", "Index", "Building", null, new { @class = "btn btn-outline-secondary" })
+    }
+    else if (Session["manager"] != null)
+    {
+        @Html.ActionLink("Back to buildings", "Index", "Building", null, new { @class = "btn btn-outline-secondary" })
+    }
+    else
+    {
+        @Html.ActionLink("Back to home", "Index", "Home", null, new { @class = "btn btn-outline-secondary" })
+    }
+</p>

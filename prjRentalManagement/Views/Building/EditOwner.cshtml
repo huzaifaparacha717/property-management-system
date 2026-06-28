@@ -1,0 +1,53 @@
+@model prjRentalManagement.Models.building
+@{
+    ViewBag.Title = "Edit building";
+}
+<h2>Edit building</h2>
+@using (Html.BeginForm("EditOwner", "Building", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.buildingId)
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.address)
+        @Html.EditorFor(m => m.address, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.city)
+        @Html.EditorFor(m => m.city, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.province)
+        @Html.DropDownListFor(m => m.province, (SelectList)ViewBag.ProvinceList, "-- Select province --", new { @class = "form-control" })
+    </div>
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.postalCode)
+        @Html.EditorFor(m => m.postalCode, new { htmlAttributes = new { @class = "form-control", placeholder = "5 digits e.g. 75500" } })
+    </div>
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.totalUnits)
+        @Html.EditorFor(m => m.totalUnits, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0", max = "5000" } })
+        @Html.ValidationMessageFor(m => m.totalUnits, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.availableUnits)
+        @Html.EditorFor(m => m.availableUnits, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0", max = "5000" } })
+        @Html.ValidationMessageFor(m => m.availableUnits, "", new { @class = "text-danger" })
+    </div>
+    @if (!string.IsNullOrEmpty(Model.imagePath))
+    {
+        <div class="form-group mb-2">
+            <label>Current photo</label><br />
+            <img src="@Url.Content(Model.imagePath)" alt="" class="img-thumbnail" style="max-height:180px;" />
+        </div>
+    }
+    <div class="form-group mb-3">
+        <label>Replace photo</label>
+        <input type="file" name="photoFile" accept="image/jpeg,image/png,image/gif,image/webp" class="form-control" />
+        <small class="text-muted">Optional. Max 5 MB.</small>
+        @Html.ValidationMessage("photoFile", "", new { @class = "text-danger" })
+    </div>
+    <input type="submit" value="Save" class="btn btn-primary" />
+}
+<p class="mt-2">@Html.ActionLink("Back", "Index")</p>
+@section Scripts { @Scripts.Render("~/bundles/jqueryval") }

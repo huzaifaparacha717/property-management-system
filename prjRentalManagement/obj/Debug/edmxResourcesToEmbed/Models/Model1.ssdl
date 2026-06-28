@@ -1,0 +1,364 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DbPropertyRentalModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="DbPropertyRentalModelStoreContainer">
+    <EntitySet Name="apartments" EntityType="DbPropertyRentalModel.Store.apartments" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="appointments" EntityType="DbPropertyRentalModel.Store.appointments" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="buildings" EntityType="DbPropertyRentalModel.Store.buildings" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="managers" EntityType="DbPropertyRentalModel.Store.managers" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="messageManagers" EntityType="DbPropertyRentalModel.Store.messageManagers" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="messageOwners" EntityType="DbPropertyRentalModel.Store.messageOwners" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="owners" EntityType="DbPropertyRentalModel.Store.owners" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="tenants" EntityType="DbPropertyRentalModel.Store.tenants" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="eventOwners" EntityType="DbPropertyRentalModel.Store.eventOwners" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="bookings" EntityType="DbPropertyRentalModel.Store.bookings" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK_apartment_building" Association="DbPropertyRentalModel.Store.FK_apartment_building">
+      <End Role="building" EntitySet="buildings" />
+      <End Role="apartment" EntitySet="apartments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_apartment_tenant" Association="DbPropertyRentalModel.Store.FK_apartment_tenant">
+      <End Role="tenant" EntitySet="tenants" />
+      <End Role="apartment" EntitySet="apartments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_appointment_manager" Association="DbPropertyRentalModel.Store.FK_appointment_manager">
+      <End Role="manager" EntitySet="managers" />
+      <End Role="appointment" EntitySet="appointments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_appointment_tenant" Association="DbPropertyRentalModel.Store.FK_appointment_tenant">
+      <End Role="tenant" EntitySet="tenants" />
+      <End Role="appointment" EntitySet="appointments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_building_manager" Association="DbPropertyRentalModel.Store.FK_building_manager">
+      <End Role="manager" EntitySet="managers" />
+      <End Role="building" EntitySet="buildings" />
+    </AssociationSet>
+    <AssociationSet Name="FK_building_owner" Association="DbPropertyRentalModel.Store.FK_building_owner">
+      <End Role="owner" EntitySet="owners" />
+      <End Role="building" EntitySet="buildings" />
+    </AssociationSet>
+    <AssociationSet Name="FK_messageManager_manager" Association="DbPropertyRentalModel.Store.FK_messageManager_manager">
+      <End Role="manager" EntitySet="managers" />
+      <End Role="messageManager" EntitySet="messageManagers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_messageOwner_manager" Association="DbPropertyRentalModel.Store.FK_messageOwner_manager">
+      <End Role="manager" EntitySet="managers" />
+      <End Role="messageOwner" EntitySet="messageOwners" />
+    </AssociationSet>
+    <AssociationSet Name="FK_messageManager_tenant" Association="DbPropertyRentalModel.Store.FK_messageManager_tenant">
+      <End Role="tenant" EntitySet="tenants" />
+      <End Role="messageManager" EntitySet="messageManagers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_messageOwner_owner" Association="DbPropertyRentalModel.Store.FK_messageOwner_owner">
+      <End Role="owner" EntitySet="owners" />
+      <End Role="messageOwner" EntitySet="messageOwners" />
+    </AssociationSet>
+    <AssociationSet Name="FK_eventOwner_apartment" Association="DbPropertyRentalModel.Store.FK_eventOwner_apartment">
+      <End Role="apartment" EntitySet="apartments" />
+      <End Role="eventOwner" EntitySet="eventOwners" />
+    </AssociationSet>
+    <AssociationSet Name="FK_eventOwner_manager" Association="DbPropertyRentalModel.Store.FK_eventOwner_manager">
+      <End Role="manager" EntitySet="managers" />
+      <End Role="eventOwner" EntitySet="eventOwners" />
+    </AssociationSet>
+    <AssociationSet Name="FK_eventOwner_owner" Association="DbPropertyRentalModel.Store.FK_eventOwner_owner">
+      <End Role="owner" EntitySet="owners" />
+      <End Role="eventOwner" EntitySet="eventOwners" />
+    </AssociationSet>
+    <AssociationSet Name="FK_booking_apartment" Association="DbPropertyRentalModel.Store.FK_booking_apartment">
+      <End Role="apartment" EntitySet="apartments" />
+      <End Role="booking" EntitySet="bookings" />
+    </AssociationSet>
+    <AssociationSet Name="FK_booking_tenant" Association="DbPropertyRentalModel.Store.FK_booking_tenant">
+      <End Role="tenant" EntitySet="tenants" />
+      <End Role="booking" EntitySet="bookings" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="apartments">
+    <Key>
+      <PropertyRef Name="apartmentId" />
+    </Key>
+    <Property Name="apartmentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="apartmentNo" Type="int" Nullable="false" />
+    <Property Name="nbRooms" Type="int" Nullable="false" />
+    <Property Name="price" Type="decimal" Nullable="false" Precision="19" Scale="4" />
+    <Property Name="status" Type="nvarchar" Nullable="false" MaxLength="20" />
+    <Property Name="buildingId" Type="int" Nullable="false" />
+    <Property Name="tenantId" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="appointments">
+    <Key>
+      <PropertyRef Name="appointmentId" />
+    </Key>
+    <Property Name="appointmentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="managerId" Type="int" Nullable="false" />
+    <Property Name="tenantId" Type="int" Nullable="false" />
+    <Property Name="appointmentDate" Type="datetime" Nullable="false" />
+    <Property Name="description" Type="nvarchar" Nullable="false" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="buildings">
+    <Key>
+      <PropertyRef Name="buildingId" />
+    </Key>
+    <Property Name="buildingId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="address" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="city" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="province" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="postalCode" Type="nvarchar" Nullable="false" MaxLength="10" />
+    <Property Name="imagePath" Type="nvarchar" Nullable="true" MaxLength="500" />
+    <Property Name="ownerId" Type="int" Nullable="false" />
+    <Property Name="managerId" Type="int" Nullable="false" />
+    <Property Name="totalUnits" Type="int" Nullable="true" />
+    <Property Name="availableUnits" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="managers">
+    <Key>
+      <PropertyRef Name="managerId" />
+    </Key>
+    <Property Name="managerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="email" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="password" Type="nvarchar" Nullable="false" MaxLength="64" />
+    <Property Name="phoneNumber" Type="nvarchar" Nullable="false" MaxLength="15" />
+  </EntityType>
+  <EntityType Name="messageManagers">
+    <Key>
+      <PropertyRef Name="messageId" />
+    </Key>
+    <Property Name="messageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="managerId" Type="int" Nullable="false" />
+    <Property Name="tenantId" Type="int" Nullable="false" />
+    <Property Name="message" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="responseMessage" Type="nvarchar" Nullable="true" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="messageOwners">
+    <Key>
+      <PropertyRef Name="messageId" />
+    </Key>
+    <Property Name="messageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ownerId" Type="int" Nullable="false" />
+    <Property Name="managerId" Type="int" Nullable="false" />
+    <Property Name="message" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="responseMessage" Type="nvarchar" Nullable="true" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="owners">
+    <Key>
+      <PropertyRef Name="ownerId" />
+    </Key>
+    <Property Name="ownerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="email" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="password" Type="nvarchar" Nullable="false" MaxLength="64" />
+    <Property Name="phoneNumber" Type="nvarchar" Nullable="false" MaxLength="15" />
+  </EntityType>
+  <EntityType Name="tenants">
+    <Key>
+      <PropertyRef Name="tenantId" />
+    </Key>
+    <Property Name="tenantId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="email" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="password" Type="nvarchar" Nullable="false" MaxLength="64" />
+    <Property Name="phoneNumber" Type="nvarchar" Nullable="false" MaxLength="15" />
+  </EntityType>
+  <EntityType Name="eventOwners">
+    <Key>
+      <PropertyRef Name="eventId" />
+    </Key>
+    <Property Name="eventId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="managerId" Type="int" Nullable="false" />
+    <Property Name="ownerId" Type="int" Nullable="false" />
+    <Property Name="apartmentId" Type="int" Nullable="false" />
+    <Property Name="eventDate" Type="datetime" Nullable="false" />
+    <Property Name="description" Type="nvarchar" Nullable="false" MaxLength="255" />
+    <Property Name="status" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="bookings">
+    <Key>
+      <PropertyRef Name="bookingId" />
+    </Key>
+    <Property Name="bookingId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="apartmentId" Type="int" Nullable="false" />
+    <Property Name="tenantId" Type="int" Nullable="false" />
+    <Property Name="status" Type="nvarchar" Nullable="false" MaxLength="20" />
+    <Property Name="requestDate" Type="datetime" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_apartment_building">
+    <End Role="building" Type="DbPropertyRentalModel.Store.buildings" Multiplicity="1" />
+    <End Role="apartment" Type="DbPropertyRentalModel.Store.apartments" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="building">
+        <PropertyRef Name="buildingId" />
+      </Principal>
+      <Dependent Role="apartment">
+        <PropertyRef Name="buildingId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_apartment_tenant">
+    <End Role="tenant" Type="DbPropertyRentalModel.Store.tenants" Multiplicity="0..1" />
+    <End Role="apartment" Type="DbPropertyRentalModel.Store.apartments" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tenant">
+        <PropertyRef Name="tenantId" />
+      </Principal>
+      <Dependent Role="apartment">
+        <PropertyRef Name="tenantId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_appointment_manager">
+    <End Role="manager" Type="DbPropertyRentalModel.Store.managers" Multiplicity="1" />
+    <End Role="appointment" Type="DbPropertyRentalModel.Store.appointments" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="manager">
+        <PropertyRef Name="managerId" />
+      </Principal>
+      <Dependent Role="appointment">
+        <PropertyRef Name="managerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_appointment_tenant">
+    <End Role="tenant" Type="DbPropertyRentalModel.Store.tenants" Multiplicity="1" />
+    <End Role="appointment" Type="DbPropertyRentalModel.Store.appointments" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tenant">
+        <PropertyRef Name="tenantId" />
+      </Principal>
+      <Dependent Role="appointment">
+        <PropertyRef Name="tenantId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_building_manager">
+    <End Role="manager" Type="DbPropertyRentalModel.Store.managers" Multiplicity="1" />
+    <End Role="building" Type="DbPropertyRentalModel.Store.buildings" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="manager">
+        <PropertyRef Name="managerId" />
+      </Principal>
+      <Dependent Role="building">
+        <PropertyRef Name="managerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_building_owner">
+    <End Role="owner" Type="DbPropertyRentalModel.Store.owners" Multiplicity="1" />
+    <End Role="building" Type="DbPropertyRentalModel.Store.buildings" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="owner">
+        <PropertyRef Name="ownerId" />
+      </Principal>
+      <Dependent Role="building">
+        <PropertyRef Name="ownerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_messageManager_manager">
+    <End Role="manager" Type="DbPropertyRentalModel.Store.managers" Multiplicity="1" />
+    <End Role="messageManager" Type="DbPropertyRentalModel.Store.messageManagers" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="manager">
+        <PropertyRef Name="managerId" />
+      </Principal>
+      <Dependent Role="messageManager">
+        <PropertyRef Name="managerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_messageOwner_manager">
+    <End Role="manager" Type="DbPropertyRentalModel.Store.managers" Multiplicity="1" />
+    <End Role="messageOwner" Type="DbPropertyRentalModel.Store.messageOwners" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="manager">
+        <PropertyRef Name="managerId" />
+      </Principal>
+      <Dependent Role="messageOwner">
+        <PropertyRef Name="managerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_messageManager_tenant">
+    <End Role="tenant" Type="DbPropertyRentalModel.Store.tenants" Multiplicity="1" />
+    <End Role="messageManager" Type="DbPropertyRentalModel.Store.messageManagers" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tenant">
+        <PropertyRef Name="tenantId" />
+      </Principal>
+      <Dependent Role="messageManager">
+        <PropertyRef Name="tenantId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_messageOwner_owner">
+    <End Role="owner" Type="DbPropertyRentalModel.Store.owners" Multiplicity="1" />
+    <End Role="messageOwner" Type="DbPropertyRentalModel.Store.messageOwners" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="owner">
+        <PropertyRef Name="ownerId" />
+      </Principal>
+      <Dependent Role="messageOwner">
+        <PropertyRef Name="ownerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_eventOwner_apartment">
+    <End Role="apartment" Type="DbPropertyRentalModel.Store.apartments" Multiplicity="1" />
+    <End Role="eventOwner" Type="DbPropertyRentalModel.Store.eventOwners" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="apartment">
+        <PropertyRef Name="apartmentId" />
+      </Principal>
+      <Dependent Role="eventOwner">
+        <PropertyRef Name="apartmentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_eventOwner_manager">
+    <End Role="manager" Type="DbPropertyRentalModel.Store.managers" Multiplicity="1" />
+    <End Role="eventOwner" Type="DbPropertyRentalModel.Store.eventOwners" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="manager">
+        <PropertyRef Name="managerId" />
+      </Principal>
+      <Dependent Role="eventOwner">
+        <PropertyRef Name="managerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_eventOwner_owner">
+    <End Role="owner" Type="DbPropertyRentalModel.Store.owners" Multiplicity="1" />
+    <End Role="eventOwner" Type="DbPropertyRentalModel.Store.eventOwners" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="owner">
+        <PropertyRef Name="ownerId" />
+      </Principal>
+      <Dependent Role="eventOwner">
+        <PropertyRef Name="ownerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_booking_apartment">
+    <End Role="apartment" Type="DbPropertyRentalModel.Store.apartments" Multiplicity="1" />
+    <End Role="booking" Type="DbPropertyRentalModel.Store.bookings" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="apartment">
+        <PropertyRef Name="apartmentId" />
+      </Principal>
+      <Dependent Role="booking">
+        <PropertyRef Name="apartmentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_booking_tenant">
+    <End Role="tenant" Type="DbPropertyRentalModel.Store.tenants" Multiplicity="1" />
+    <End Role="booking" Type="DbPropertyRentalModel.Store.bookings" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tenant">
+        <PropertyRef Name="tenantId" />
+      </Principal>
+      <Dependent Role="booking">
+        <PropertyRef Name="tenantId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

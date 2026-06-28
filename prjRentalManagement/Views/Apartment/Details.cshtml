@@ -1,0 +1,98 @@
+@model prjRentalManagement.Models.apartment
+@using prjRentalManagement.Helpers
+@using prjRentalManagement.Models
+@{
+    ViewBag.Title = "Apartment details";
+    var b = Model.building;
+}
+
+<h2>Apartment details</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (b != null)
+{
+    <div class="prm-card prm-card--padded mb-4">
+        <h3 class="h5 mb-3">Location</h3>
+        <div class="row g-3 align-items-start">
+            @if (!string.IsNullOrEmpty(b.imagePath))
+            {
+                <div class="col-md-4">
+                    <img src="@Url.Content(b.imagePath)" alt="" class="img-fluid rounded" style="width:100%;max-height:220px;object-fit:cover;" />
+                </div>
+            }
+            <div class="@(!string.IsNullOrEmpty(b.imagePath) ? "col-md-8" : "col-12")">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Address</dt>
+                    <dd class="col-sm-8">@b.address</dd>
+                    <dt class="col-sm-4">City</dt>
+                    <dd class="col-sm-8">@b.city</dd>
+                    <dt class="col-sm-4">Province</dt>
+                    <dd class="col-sm-8">@b.province</dd>
+                    <dt class="col-sm-4">Postal code</dt>
+                    <dd class="col-sm-8">@b.postalCode</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="prm-card prm-card--padded mb-4">
+    <h3 class="h5 mb-3">This apartment</h3>
+    <dl class="row mb-0">
+        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.apartmentNo)</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.apartmentNo)</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.nbRooms)</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.nbRooms)</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.price)</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.price) <span class="text-muted small">(PKR / month)</span></dd>
+        <dt class="col-sm-4">Rent status</dt>
+        <dd class="col-sm-8">
+            <span class="badge @RentStatusDisplay.BadgeClass(Model.status)">@RentStatusDisplay.Label(Model.status)</span>
+        </dd>
+        <dt class="col-sm-4">Tenant</dt>
+        <dd class="col-sm-8">@(Model.tenant != null ? Model.tenant.name : "—")</dd>
+    </dl>
+    @{
+        var myPending = ViewBag.MyPendingBooking as prjRentalManagement.Models.booking;
+        var canRequest = ViewBag.CanRequestBooking as bool? == true;
+    }
+    @if (myPending != null)
+    {
+        <div class="alert alert-warning mt-3 mb-0">
+            Your booking request is <span class="badge @BookingStatusDisplay.BadgeClass(myPending.status)">@myPending.status</span>
+            <span class="text-muted small">(requested @myPending.requestDate.ToLocalTime().ToString("g"))</span>
+        </div>
+    }
+</div>
+
+<p class="d-flex flex-wrap gap-2 align-items-center">
+    @if (Session["tenant"] != null && canRequest)
+    {
+        using (Html.BeginForm("Book", "Apartment", new { id = Model.apartmentId }, FormMethod.Post, new { @class = "d-inline" }))
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-primary">Book Now</button>
+        }
+    }
+    else if (Session["tenant"] != null && myPending == null && ApartmentStatuses.IsPubliclyBookable(Model.status) && Model.tenantId == null)
+    {
+        <span class="text-muted small">This listing is not available for a new request right now.</span>
+    }
+    @if (Session["manager"] != null)
+    {
+        @Html.ActionLink("Edit", "Edit", new { id = Model.apartmentId }, new { @class = "btn btn-primary" })
+    }
+    @if (Session["owner"] != null && Model.building != null && Model.building.ownerId == (int)Session["owner"])
+    {
+        @Html.ActionLink("Edit listing", "Edit", new { id = Model.apartmentId }, new { @class = "btn btn-warning" })
+    }
+    @Html.ActionLink("Back to list", "Index", "Apartment", null, new { @class = "btn btn-outline-secondary" })
+</p>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" class="prm-root">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#070a0f" />
+    <title>@ViewBag.Title - Property Rental Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+    @Styles.Render("~/Content/css")
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" crossorigin="anonymous" />
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body class="prm-body d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark prm-navbar fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                @if (Session["owner"] == null && Session["manager"] == null && Session["tenant"] == null)
+                {
+                    @:Property Rental
+                }
+                else
+                {
+                    @:Home listings
+                }
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#prmNavbar" aria-controls="prmNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="prmNavbar">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+                    @if (Session["owner"] == null && Session["manager"] == null && Session["tenant"] == null)
+                    {
+                        <li class="nav-item"><span class="navbar-text text-white-50 me-2 d-none d-lg-inline">Owner</span></li>
+                        <li class="nav-item">@Html.ActionLink("Login", "Login", "OwnerAccess", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Sign up", "Register", "OwnerAccess", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item"><span class="navbar-text text-white-50 ms-lg-2 me-2 d-none d-lg-inline">Tenant</span></li>
+                        <li class="nav-item">@Html.ActionLink("Login", "Login", "TenantAccess", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Sign up", "Register", "TenantAccess", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item"><span class="navbar-text text-white-50 ms-lg-2 me-2 d-none d-lg-inline">Admin</span></li>
+                        <li class="nav-item">@Html.ActionLink("Manager login", "Login", "ManagerAccess", null, new { @class = "nav-link" })</li>
+                    }
+                    else if (Session["owner"] != null)
+                    {
+                        <li class="nav-item">@Html.ActionLink("Owner account", "Index", "Owner", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item d-flex align-items-center flex-wrap">@Html.ActionLink("Dashboard", "Index", "OwnerDashboard", null, new { @class = "nav-link" })@Html.Action("OwnerNavBadge", "OwnerDashboard")</li>
+                        <li class="nav-item">@Html.ActionLink("My listings", "Index", "Apartment", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Messages", "Index", "MessageOwner", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Events", "Index", "EventOwner", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Logout", "Logout", "Home", null, new { @class = "nav-link" })</li>
+                    }
+                    else if (Session["manager"] != null)
+                    {
+                        <li class="nav-item">@Html.ActionLink("Admin panel", "Index", "Admin", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Managers", "Index", "Manager", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Buildings", "Index", "Building", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Apartments", "Index", "Apartment", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Owners", "Index", "Owner", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Tenants", "Index", "Tenant", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Appointments", "Index", "Appointment", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Messages to owners", "Index", "MessageOwner", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Messages to tenants", "Index", "MessageManager", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Events", "Index", "EventOwner", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Logout", "Logout", "Home", null, new { @class = "nav-link" })</li>
+                    }
+                    else if (Session["tenant"] != null)
+                    {
+                        <li class="nav-item">@Html.ActionLink("My account", "Index", "Tenant", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Browse / book", "Index", "Apartment", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("My bookings", "Index", "TenantBooking", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Messages", "Index", "MessageManager", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Appointment", "Create", "Appointment", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Logout", "Logout", "Home", null, new { @class = "nav-link" })</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main class="container body-content prm-body-content flex-grow-1">
+        @RenderBody()
+    </main>
+    <footer class="prm-footer mt-auto">
+        <div class="container py-4 text-center text-md-start">
+            <p>&copy; @DateTime.Now.Year — Property Rental Management</p>
+        </div>
+    </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js" crossorigin="anonymous"></script>
+    <script>
+        (function () {
+            if (typeof toastr === 'undefined') return;
+            toastr.options = { closeButton: true, positionClass: 'toast-bottom-right', progressBar: true, timeOut: 4500 };
+            @if (TempData["Message"] != null)
+            {
+                <text>toastr.success(@Html.Raw(Json.Encode(TempData["Message"])));</text>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <text>toastr.error(@Html.Raw(Json.Encode(TempData["Error"])));</text>
+            }
+        })();
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

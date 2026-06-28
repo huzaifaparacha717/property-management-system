@@ -1,0 +1,86 @@
+@{
+    ViewBag.Title = "Manager Admin Panel";
+}
+
+<div class="mb-4">
+    <h2>Admin panel</h2>
+    <p class="lead">From here you can manage owners, tenants, buildings, apartments, and everything else in the system.</p>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card h-100 border-primary">
+            <div class="card-body">
+                <h5 class="card-title">Owners</h5>
+                <p class="card-text">View all owners, add accounts, and edit records.</p>
+                @Html.ActionLink("Manage owners", "Index", "Owner", null, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Add owner", "Create", "Owner", null, new { @class = "btn btn-outline-primary mt-2 d-block" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-primary">
+            <div class="card-body">
+                <h5 class="card-title">Tenants</h5>
+                <p class="card-text">Tenant directory and account management.</p>
+                @Html.ActionLink("Manage tenants", "Index", "Tenant", null, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Add tenant", "Create", "Tenant", null, new { @class = "btn btn-outline-primary mt-2 d-block" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-primary">
+            <div class="card-body">
+                <h5 class="card-title">Managers</h5>
+                <p class="card-text">Team / property managers.</p>
+                @Html.ActionLink("Manage managers", "Index", "Manager", null, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Add manager", "Create", "Manager", null, new { @class = "btn btn-outline-primary mt-2 d-block" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-secondary">
+            <div class="card-body">
+                <h5 class="card-title">Buildings</h5>
+                <p class="card-text">All buildings.</p>
+                @Html.ActionLink("Buildings", "Index", "Building", null, new { @class = "btn btn-secondary" })
+                @Html.ActionLink("New building", "Create", "Building", null, new { @class = "btn btn-outline-secondary mt-2 d-block" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-secondary">
+            <div class="card-body">
+                <h5 class="card-title">Apartments</h5>
+                <p class="card-text">All apartment units.</p>
+                @Html.ActionLink("Apartments", "Index", "Apartment", null, new { @class = "btn btn-secondary" })
+                @Html.ActionLink("New apartment", "Create", "Apartment", null, new { @class = "btn btn-outline-secondary mt-2 d-block" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-secondary">
+            <div class="card-body">
+                <h5 class="card-title">Appointments</h5>
+                @Html.ActionLink("Appointments", "Index", "Appointment", null, new { @class = "btn btn-secondary" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-info">
+            <div class="card-body">
+                <h5 class="card-title">Messages</h5>
+                @Html.ActionLink("Manager messages", "Index", "MessageManager", null, new { @class = "btn btn-info btn-sm d-block mb-1" })
+                @Html.ActionLink("Owner messages", "Index", "MessageOwner", null, new { @class = "btn btn-info btn-sm d-block" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-info">
+            <div class="card-body">
+                <h5 class="card-title">Events</h5>
+                @Html.ActionLink("Events", "Index", "EventOwner", null, new { @class = "btn btn-info" })
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,186 @@
+@model prjRentalManagement.Models.OwnerDashboardViewModel
+@using prjRentalManagement.Helpers
+@{
+    ViewBag.Title = "Owner dashboard";
+}
+
+<div class="prm-dash-header mb-4">
+    <h2 class="h3 mb-1">Property dashboard</h2>
+    <p class="text-muted mb-0">Review booking requests, confirm rentals, and close completed stays.</p>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100 bg-primary text-white">
+            <div class="card-body">
+                <div class="small text-white-50 text-uppercase">Total apartments</div>
+                <div class="display-6 fw-bold">@Model.TotalApartments</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100 bg-warning">
+            <div class="card-body">
+                <div class="small text-muted text-uppercase">Pending requests</div>
+                <div class="display-6 fw-bold">@Model.PendingRequestCount</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100 bg-success text-white">
+            <div class="card-body">
+                <div class="small text-white-50 text-uppercase">Active bookings</div>
+                <div class="display-6 fw-bold">@Model.ActiveConfirmedCount</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="prmDashAnti" class="d-none">@Html.AntiForgeryToken()</form>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <strong>Booking requests</strong>
+        <span class="badge bg-warning text-dark">Pending</span>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.PendingBookings == null || !Model.PendingBookings.Any())
+        {
+            <p class="text-muted p-4 mb-0">No pending booking requests.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="prmPendingBookings">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Requested</th>
+                            <th>Tenant</th>
+                            <th>Apartment</th>
+                            <th>Location</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var b in Model.PendingBookings)
+                        {
+                            var apt = b.apartment;
+                            var bld = apt?.building;
+                            <tr data-booking-id="@b.bookingId">
+                                <td>@b.requestDate.ToLocalTime().ToString("g")</td>
+                                <td>
+                                    @(b.tenant != null ? b.tenant.name : "—")
+                                    <div class="small text-muted">@(b.tenant?.email)</div>
+                                </td>
+                                <td>#@(apt?.apartmentNo) <span class="text-muted small">(ID @b.apartmentId)</span></td>
+                                <td>@(bld != null ? bld.address + ", " + bld.city : "—")</td>
+                                <td class="text-end text-nowrap">
+                                    <button type="button" class="btn btn-success btn-sm prm-approve" data-id="@b.bookingId">Approve</button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm prm-reject" data-id="@b.bookingId">Reject</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <strong>Active rentals</strong>
+        <span class="badge bg-success">Confirmed</span>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.ActiveBookings == null || !Model.ActiveBookings.Any())
+        {
+            <p class="text-muted p-4 mb-0">No active confirmed bookings.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Since</th>
+                            <th>Tenant</th>
+                            <th>Apartment</th>
+                            <th>Location</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var b in Model.ActiveBookings)
+                        {
+                            var apt = b.apartment;
+                            var bld = apt?.building;
+                            <tr>
+                                <td>@b.requestDate.ToLocalTime().ToString("g")</td>
+                                <td>
+                                    @(b.tenant != null ? b.tenant.name : "—")
+                                    <div class="small text-muted">@(b.tenant?.email)</div>
+                                </td>
+                                <td>#@(apt?.apartmentNo)</td>
+                                <td>@(bld != null ? bld.address + ", " + bld.city : "—")</td>
+                                <td class="text-end">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm prm-complete" data-id="@b.bookingId">Mark completed</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<p>@Html.ActionLink("My listings", "Index", "Apartment", null, new { @class = "btn btn-outline-secondary" })</p>
+
+@section scripts {
+    <script>
+        (function () {
+            function token() {
+                return $('#prmDashAnti input[name="__RequestVerificationToken"]').val();
+            }
+            function postJson(url, id, onDone) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: { __RequestVerificationToken: token(), id: id },
+                    success: function (res) {
+                        if (res && res.success) {
+                            if (typeof toastr !== 'undefined') toastr.success(res.message || 'Saved');
+                            else alert(res.message || 'Saved');
+                            if (onDone) onDone();
+                            else window.location.reload();
+                        } else {
+                            var msg = (res && res.message) ? res.message : 'Request failed';
+                            if (typeof toastr !== 'undefined') toastr.error(msg);
+                            else alert(msg);
+                        }
+                    },
+                    error: function () {
+                        if (typeof toastr !== 'undefined') toastr.error('Network or server error');
+                        else alert('Network or server error');
+                    }
+                });
+            }
+            $('#prmPendingBookings').on('click', '.prm-approve', function () {
+                var id = $(this).data('id');
+                var row = $(this).closest('tr');
+                postJson('@Url.Action("ApproveAjax", "OwnerBooking")', id, function () { row.remove(); });
+            });
+            $('#prmPendingBookings').on('click', '.prm-reject', function () {
+                var id = $(this).data('id');
+                var row = $(this).closest('tr');
+                postJson('@Url.Action("RejectAjax", "OwnerBooking")', id, function () { row.remove(); });
+            });
+            $(document).on('click', '.prm-complete', function () {
+                var id = $(this).data('id');
+                var row = $(this).closest('tr');
+                postJson('@Url.Action("CompleteAjax", "OwnerBooking")', id, function () { row.remove(); });
+            });
+        })();
+    </script>
+}

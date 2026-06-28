@@ -1,0 +1,15 @@
+@model prjRentalManagement.Models.apartment
+@{
+    ViewBag.Title = "Book apartment";
+}
+<h2>Request a booking</h2>
+<p class="text-muted">The owner will review your request. You will be assigned only after approval.</p>
+<p><strong>Address:</strong> @Model.building.address, @Model.building.city</p>
+<p><strong>Apartment #:</strong> @Model.apartmentNo &nbsp; <strong>Price:</strong> @Model.price</p>
+@using (Html.BeginForm("Book", "Apartment", new { id = Model.apartmentId }, FormMethod.Post, null))
+{
+    @Html.AntiForgeryToken()
+    <p>Send a <strong>pending</strong> booking request to the owner?</p>
+    <button type="submit" class="btn btn-primary">Book Now</button>
+}
+<p class="mt-2">@Html.ActionLink("Cancel", "Details", new { id = Model.apartmentId })</p>

@@ -1,0 +1,53 @@
+@model prjRentalManagement.Models.building
+@{
+    ViewBag.Title = "Add your building";
+}
+<h2>Add your building</h2>
+<p>Enter the address. The system assigns the first available property manager.</p>
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+@using (Html.BeginForm("CreateOwner", "Building", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.address)
+        @Html.EditorFor(m => m.address, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(m => m.address, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.city)
+        @Html.EditorFor(m => m.city, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.province)
+        @Html.DropDownListFor(m => m.province, (SelectList)ViewBag.ProvinceList, "-- Select province --", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.province, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.postalCode)
+        @Html.EditorFor(m => m.postalCode, new { htmlAttributes = new { @class = "form-control", placeholder = "5 digits e.g. 75500" } })
+        @Html.ValidationMessageFor(m => m.postalCode, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.totalUnits)
+        @Html.EditorFor(m => m.totalUnits, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0", max = "5000" } })
+        @Html.ValidationMessageFor(m => m.totalUnits, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.availableUnits)
+        @Html.EditorFor(m => m.availableUnits, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0", max = "5000" } })
+        @Html.ValidationMessageFor(m => m.availableUnits, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group mb-2">
+        <label>Building photo</label>
+        <input type="file" name="photoFile" accept="image/jpeg,image/png,image/gif,image/webp" class="form-control" />
+        <small class="text-muted">Optional. JPG, PNG, GIF or WebP, max 5 MB.</small>
+        @Html.ValidationMessage("photoFile", "", new { @class = "text-danger" })
+    </div>
+    <input type="submit" value="Save" class="btn btn-primary" />
+}
+<p class="mt-2">@Html.ActionLink("Back", "Index")</p>
+@section Scripts { @Scripts.Render("~/bundles/jqueryval") }

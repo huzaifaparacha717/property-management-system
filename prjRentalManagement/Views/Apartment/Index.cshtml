@@ -1,0 +1,70 @@
+@model IEnumerable<prjRentalManagement.Models.apartment>
+@{
+    ViewBag.Title = "Apartments";
+    var rs = Request["rentStatus"];
+    var curStatus = string.IsNullOrEmpty(rs) ? "all" : rs;
+}
+<h2>Apartments</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (Session["owner"] != null)
+{
+    <p class="small text-muted mb-2">
+        Listings are tied to a <strong>location</strong> you added earlier.
+        @Html.ActionLink("Manage property locations", "Index", "Building", null, new { @class = "text-decoration-underline" })
+        — then use <strong>List new apartment</strong> below.
+    </p>
+}
+
+@using (Html.BeginForm("Index", "Apartment", FormMethod.Get, new { @class = "row g-2 align-items-end mb-3" }))
+{
+    <div class="col-md-5">
+        <label class="form-label small text-muted mb-1">Search</label>
+        @Html.TextBox("search", Request["search"], new { @class = "form-control", placeholder = "Address, city, province, postal, apt #, price, status…" })
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <label class="form-label small text-muted mb-1">Rent status</label>
+        <select name="rentStatus" class="form-select">
+            <option value="all" @(curStatus == "all" ? "selected" : null)>All</option>
+            <option value="available" @(curStatus == "available" ? "selected" : null)>Available</option>
+            <option value="rented" @(curStatus == "rented" || curStatus == "booked" ? "selected" : null)>Rented</option>
+            <option value="unavailable" @(curStatus == "unavailable" ? "selected" : null)>Not available</option>
+            @if (Session["tenant"] != null)
+            {
+                <option value="mine" @(curStatus == "mine" ? "selected" : null)>My bookings</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3 col-lg-2">
+        <button type="submit" class="btn btn-primary w-100">Apply</button>
+    </div>
+}
+
+@if (Session["manager"] != null)
+{
+    <p>
+        @Html.ActionLink("Create new apartment", "Create", null, new { @class = "btn btn-primary" })
+    </p>
+}
+@if (Session["owner"] != null)
+{
+    <p>
+        @Html.ActionLink("List new apartment", "Create", null, new { @class = "btn btn-primary" })
+    </p>
+}
+
+<section class="prm-section prm-building-strip" aria-label="Apartment listings">
+    @{
+        ViewBag.AptScrollId = "prmAptIdxScroll";
+        ViewBag.AptScrollNextId = "prmAptIdxNext";
+    }
+    @Html.Partial("_ApartmentOlxStrip", Model)
+</section>

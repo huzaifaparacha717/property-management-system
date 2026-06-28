@@ -1,0 +1,34 @@
+@model prjRentalManagement.Models.apartment
+@{
+    ViewBag.Title = "Edit apartment";
+}
+<h2>Apartment edit</h2>
+@using (Html.BeginForm("EditOwner", "Apartment", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.apartmentId)
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.apartmentNo)
+        @Html.EditorFor(m => m.apartmentNo, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.nbRooms)
+        @Html.EditorFor(m => m.nbRooms, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.price)
+        @Html.EditorFor(m => m.price, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.status)
+        @Html.DropDownListFor(m => m.status, new SelectList(new[] { "Available", "Unavailable", "Booked" }), new { @class = "form-control" })
+    </div>
+    <div class="form-group mb-3">
+        @Html.LabelFor(m => m.buildingId)
+        @Html.DropDownList("buildingId", null, new { @class = "form-control" })
+    </div>
+    <input type="submit" value="Save" class="btn btn-primary" />
+}
+<p class="mt-2">@Html.ActionLink("Back", "Index")</p>
+@section Scripts { @Scripts.Render("~/bundles/jqueryval") }

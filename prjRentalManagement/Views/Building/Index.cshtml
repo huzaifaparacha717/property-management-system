@@ -1,0 +1,143 @@
+@model IEnumerable<prjRentalManagement.Models.building>
+@using System.Linq
+@using prjRentalManagement.Helpers
+@{
+    ViewBag.Title = "Buildings";
+}
+
+<h2>Buildings</h2>
+
+@using (Html.BeginForm("Index", "Building", FormMethod.Get, new { @class = "prm-search-row" }))
+{
+    @Html.TextBox("search", ViewBag.Search as string, new
+    {
+        @class = "form-control",
+        placeholder = "Search by address, city, province, postal code..."
+    })
+    <input type="submit" value="Search buildings" class="btn btn-primary" />
+}
+
+@if (Session["manager"] != null || Session["owner"] != null)
+{
+    <p>
+        @Html.ActionLink("Add property", "Create", null, new { @class = "btn btn-primary" })
+    </p>
+}
+@if (!Model.Any())
+{
+    <div class="alert alert-info mt-3">
+        <strong>No buildings found.</strong> Try another search or check back later.
+    </div>
+}
+else
+{
+    <div class="table-responsive prm-table-wrap">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Photo</th>
+                    <th>@Html.DisplayNameFor(model => model.address)</th>
+                    <th>@Html.DisplayNameFor(model => model.city)</th>
+                    <th>@Html.DisplayNameFor(model => model.province)</th>
+                    <th>@Html.DisplayNameFor(model => model.postalCode)</th>
+                    <th>Rent from (PKR)</th>
+                    <th>Units (Avail / Rented)</th>
+                    @if (Session["tenant"] == null)
+                    {
+                        <th>@Html.DisplayNameFor(model => model.manager.name)</th>
+                        <th>@Html.DisplayNameFor(model => model.owner.name)</th>
+                    }
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var apts = item.apartments != null ? item.apartments.ToList() : new System.Collections.Generic.List<prjRentalManagement.Models.apartment>();
+                    var availList = apts.Where(a => a.status == "Available").ToList();
+                    decimal? minRent = availList.Any()
+                        ? availList.Min(a => a.price)
+                        : (apts.Any() ? apts.Min(a => a.price) : (decimal?)null);
+                    var nAvail = apts.Count(a => a.status == "Available");
+                    var nRented = apts.Count(a => a.status == "Booked");
+                    <tr>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.imagePath))
+                            {
+                                <img src="@Url.Content(item.imagePath)" alt="" width="72" height="54" style="object-fit:cover;border-radius:8px;" />
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.address)</td>
+                        <td>@Html.DisplayFor(modelItem => item.city)</td>
+                        <td>@Html.DisplayFor(modelItem => item.province)</td>
+                        <td>@Html.DisplayFor(modelItem => item.postalCode)</td>
+                        <td>
+                            @if (minRent.HasValue)
+                            {
+                                @PakRsFormat.Rent(minRent)
+                                if (availList.Any())
+                                {
+                                    <span class="text-muted small d-block">(lowest from available listings)</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                        <td>
+                            @if (apts.Any())
+                            {
+                                <span class="badge bg-success me-1">@nAvail Avail</span>
+                                <span class="badge bg-primary">@nRented Rented</span>
+                                if (item.availableUnits.HasValue || item.totalUnits.HasValue)
+                                {
+                                    <span class="text-muted small d-block mt-1">Form: @(item.availableUnits?.ToString() ?? "-") avail / @(item.totalUnits?.ToString() ?? "-") total</span>
+                                }
+                            }
+                            else if (item.availableUnits.HasValue || item.totalUnits.HasValue)
+                            {
+                                <span>@(item.availableUnits?.ToString() ?? "-") avail</span>
+                                <span class="text-muted"> / </span>
+                                <span>@(item.totalUnits?.ToString() ?? "-") total</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">No units yet</span>
+                            }
+                            @if (Session["manager"] != null || Session["owner"] != null)
+                            {
+                                <div class="mt-1">
+                                    @Html.ActionLink("Add apartment / unit", "Create", "Apartment", new { buildingId = item.buildingId }, new { @class = "btn btn-outline-secondary btn-sm" })
+                                </div>
+                            }
+                        </td>
+                        @if (Session["tenant"] == null)
+                        {
+                            <td>@(item.manager != null ? item.manager.name : "-")</td>
+                            <td>@(item.owner != null ? item.owner.name : "-")</td>
+                        }
+                        <td>
+                            @if (Session["manager"] != null || Session["owner"] != null)
+                            {
+                                <div class="d-flex flex-wrap gap-1 align-items-center">
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.buildingId }, new { @class = "btn btn-warning btn-sm" })
+                                    @Html.ActionLink("Details", "Details", new { id = item.buildingId }, new { @class = "btn btn-info btn-sm" })
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.buildingId }, new { @class = "btn btn-danger btn-sm" })
+                                </div>
+                            }
+                            else if (Session["tenant"] != null)
+                            {
+                                @Html.ActionLink("Details & units", "Details", new { id = item.buildingId }, new { @class = "btn btn-primary btn-sm" })
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

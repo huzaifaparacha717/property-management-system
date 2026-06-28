@@ -1,0 +1,37 @@
+@model prjRentalManagement.Models.manager
+@{
+    ViewBag.Title = "Manager admin sign in";
+    var loginError = ViewData["LoginError"] as string;
+}
+
+<div class="prm-auth-stack">
+<div class="prm-banner">
+    <img class="prm-banner__img" src="~/Images/home.jpg" alt="Modern rental properties" />
+</div>
+
+<div class="prm-card prm-card--padded">
+    <h2>Manager / admin sign in</h2>
+    <p>Sign in here to manage owners, tenants, buildings, and apartments.</p>
+
+    @if (!string.IsNullOrEmpty(loginError))
+    {
+        <div class="alert alert-danger" role="alert">@loginError</div>
+    }
+
+    @using (Html.BeginForm("Login", "ManagerAccess", FormMethod.Post, new { novalidate = "novalidate" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group mb-2">
+            @Html.LabelFor(m => m.email)
+            @Html.EditorFor(m => m.email, new { htmlAttributes = new { @class = "form-control", autocomplete = "username" } })
+        </div>
+        <div class="form-group mb-3">
+            @Html.LabelFor(m => m.password)
+            @Html.PasswordFor(m => m.password, new { @class = "form-control", autocomplete = "current-password" })
+        </div>
+        <input type="submit" value="Sign in" class="btn btn-primary" />
+    }
+
+    <p class="mt-3 mb-0">@Html.ActionLink("Back to home", "Index", "Home")</p>
+</div>
+</div>

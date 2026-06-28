@@ -1,0 +1,56 @@
+﻿@model IEnumerable<prjRentalManagement.Models.apartment>
+@{
+    ViewBag.Title = "Home Page";
+    var rs = Request["rentStatus"];
+    var curStatus = string.IsNullOrEmpty(rs) ? "all" : rs;
+}
+
+<section class="prm-hero prm-hero--fullbleed" aria-label="Welcome">
+    <div class="prm-hero__media">
+        <img class="prm-hero__img" src="~/Images/home.jpg" alt="Modern rental properties" />
+        <div class="prm-hero__gradient" aria-hidden="true"></div>
+        <div class="prm-hero__text">
+            <h1 class="prm-hero__title">Property Rental Management</h1>
+            <p class="prm-hero__lead">Browse apartments across Pakistan — filter by rent status, search by area or price, and book when you sign in as a tenant.</p>
+        </div>
+    </div>
+</section>
+
+<section class="prm-section prm-building-strip" aria-labelledby="apt-heading">
+    <div class="prm-building-strip__head">
+        <div>
+            <h2 id="apt-heading" class="prm-section__title mb-1">Apartments</h2>
+            <p class="prm-section__hint mb-0">OLX-style cards — scroll sideways. Use search and filters to narrow listings.</p>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Index", "Home", FormMethod.Get, new { @class = "row g-2 align-items-end mb-3" }))
+    {
+        <div class="col-md-5">
+            <label class="form-label small text-muted mb-1">Search</label>
+            @Html.TextBox("search", Request["search"], new { @class = "form-control", placeholder = "Address, city, province, postal, apt #, price, status…" })
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <label class="form-label small text-muted mb-1">Rent status</label>
+            <select name="rentStatus" class="form-select">
+                <option value="all" @(curStatus == "all" ? "selected" : null)>All</option>
+                <option value="available" @(curStatus == "available" ? "selected" : null)>Available</option>
+                <option value="rented" @(curStatus == "rented" || curStatus == "booked" ? "selected" : null)>Rented</option>
+                <option value="unavailable" @(curStatus == "unavailable" ? "selected" : null)>Not available</option>
+                @if (Session["tenant"] != null)
+                {
+                    <option value="mine" @(curStatus == "mine" ? "selected" : null)>My bookings</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3 col-lg-2">
+            <button type="submit" class="btn btn-primary w-100">Apply</button>
+        </div>
+    }
+
+    @{
+        ViewBag.AptScrollId = "prmHomeAptScroll";
+        ViewBag.AptScrollNextId = "prmHomeAptNext";
+    }
+    @Html.Partial("_ApartmentOlxStrip", Model)
+</section>
