@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Property Rental Management System
 
 This repository contains the **Property Rental Management System**, a web-based application developed using **ASP.NET MVC** and **Entity Framework**. It is designed to streamline operations for **Owners**, **Managers**, and **Tenants**, offering secure and efficient management of rental properties.
@@ -102,3 +103,6 @@ This project provided hands-on experience with:
 - **ASP.NET MVC** and **Entity Framework** for building robust web applications.
 - Designing responsive user interfaces.
 - Implementing secure session-based access control.
+=======
+# property-management-system
+>>>>>>> ae25d78f8535ec6716505680062bab3765d04bca
